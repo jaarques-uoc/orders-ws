@@ -1,0 +1,12 @@
+spring:
+  application.name: products-ws
+
+eureka:
+  client.serviceUrl.defaultZone: ${EUREKA_URL:http://localhost:7100/eureka}
+  instance:
+    hostname: ${HOSTNAME:localhost}
+    non-secure-port: ${PUBLIC_PORT:7003}
+    secure-port: ${PUBLIC_PORT:7003}
+
+server:
+  port: ${PORT:7003}
