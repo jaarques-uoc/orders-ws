@@ -1,7 +1,7 @@
 package com.jaarquesuoc.shop.orders.controllers;
 
-import com.jaarquesuoc.shop.orders.dtos.NextOrderId;
-import com.jaarquesuoc.shop.orders.dtos.Order;
+import com.jaarquesuoc.shop.orders.dtos.NextOrderIdDto;
+import com.jaarquesuoc.shop.orders.dtos.OrderDto;
 import com.jaarquesuoc.shop.orders.services.OrdersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +18,12 @@ public class CustomersController {
     private final OrdersService ordersService;
 
     @GetMapping("/customers/{customerId}/orders")
-    public List<Order> getCustomerOrders(@PathVariable("customerId") final String customerId) {
+    public List<OrderDto> getCustomerOrders(@PathVariable("customerId") final String customerId) {
         return ordersService.getCustomerOrders(customerId);
     }
 
     @GetMapping("/customers/{customerId}/nextOrderId")
-    public NextOrderId getNextOrderId(@PathVariable("customerId") final String customerId) {
+    public NextOrderIdDto getNextOrderId(@PathVariable("customerId") final String customerId) {
         return ordersService.getNextOrderId(customerId);
     }
 

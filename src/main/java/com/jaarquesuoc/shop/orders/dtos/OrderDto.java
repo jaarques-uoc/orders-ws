@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class Order {
+public class OrderDto {
 
     private String id;
 
@@ -19,5 +19,5 @@ public class Order {
 
     private String customerId;
 
-    private List<OrderItem> orderItems;
+    private List<OrderItemDto> orderItemDtos;
 }

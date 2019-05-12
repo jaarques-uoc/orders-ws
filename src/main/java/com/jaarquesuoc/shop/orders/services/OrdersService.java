@@ -1,9 +1,9 @@
 package com.jaarquesuoc.shop.orders.services;
 
-import com.jaarquesuoc.shop.orders.dtos.NextOrderId;
-import com.jaarquesuoc.shop.orders.dtos.Order;
-import com.jaarquesuoc.shop.orders.dtos.OrderItem;
-import com.jaarquesuoc.shop.orders.dtos.Product;
+import com.jaarquesuoc.shop.orders.dtos.NextOrderIdDto;
+import com.jaarquesuoc.shop.orders.dtos.OrderDto;
+import com.jaarquesuoc.shop.orders.dtos.OrderItemDto;
+import com.jaarquesuoc.shop.orders.dtos.ProductDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,57 +21,70 @@ public class OrdersService {
 
     private final ProductsService productsService;
 
-    public List<Order> getOrders() {
+    public List<OrderDto> getOrders() {
         return IntStream.range(0, 30)
-            .mapToObj(i -> buildOrder(String.valueOf(i)))
+            .mapToObj(i -> buildViewOrder(String.valueOf(i)))
             .collect(toList());
     }
 
-    public List<Order> getCustomerOrders(final String customerId) {
+    public List<OrderDto> getCustomerOrders(final String customerId) {
         return IntStream.range(0, 30)
-            .mapToObj(i -> buildOrder(String.valueOf(i), customerId))
+            .mapToObj(i -> buildViewOrder(String.valueOf(i), customerId))
             .collect(toList());
     }
 
-    public Order getOrder(final String id) {
+    public OrderDto getOrder(final String id) {
         return buildOrder(id);
     }
 
-    public NextOrderId getNextOrderId(final String customerId) {
-        return NextOrderId.builder()
+    public NextOrderIdDto getNextOrderId(final String customerId) {
+        return NextOrderIdDto.builder()
             .nextOrderId(customerId + "-" + 0)
             .build();
     }
 
-    private Order buildOrder(final String id) {
+    private OrderDto buildOrder(final String id) {
         return buildOrder(id, id);
     }
 
-    private Order buildOrder(final String id, final String customerId) {
-        return Order.builder()
+    private OrderDto buildOrder(final String id, final String customerId) {
+        return OrderDto.builder()
             .id(id)
             .amount(BigDecimal.valueOf(12.56))
             .date(LocalDateTime.now())
             .customerId(customerId)
-            .orderItems(buildOrderItems())
+            .orderItemDtos(buildOrderItems())
             .build();
     }
 
-    private List<OrderItem> buildOrderItems() {
+    private OrderDto buildViewOrder(final String id) {
+        return buildViewOrder(id, id);
+    }
+
+    private OrderDto buildViewOrder(final String id, final String customerId) {
+        return OrderDto.builder()
+            .id(id)
+            .amount(BigDecimal.valueOf(12.56))
+            .date(LocalDateTime.now())
+            .customerId(customerId)
+            .build();
+    }
+
+    private List<OrderItemDto> buildOrderItems() {
         List<String> productIds = IntStream.range(0, 5)
             .mapToObj(String::valueOf)
             .collect(toList());
 
-        List<Product> products = productsService.getProducts(productIds);
+        List<ProductDto> productDtos = productsService.getProducts(productIds);
 
-        return products.stream()
+        return productDtos.stream()
             .map(this::buildOrderItem)
             .collect(toList());
     }
 
-    private OrderItem buildOrderItem(final Product product) {
-        return OrderItem.builder()
-            .product(product)
+    private OrderItemDto buildOrderItem(final ProductDto productDto) {
+        return OrderItemDto.builder()
+            .productDto(productDto)
             .quantity(2)
             .build();
     }

@@ -1,6 +1,6 @@
 package com.jaarquesuoc.shop.orders.services;
 
-import com.jaarquesuoc.shop.orders.dtos.Product;
+import com.jaarquesuoc.shop.orders.dtos.ProductDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,11 +13,11 @@ public class ProductsService {
 
     private final ProductsClient productsClient;
 
-    public Product getProduct(final String productId) {
+    public ProductDto getProduct(final String productId) {
         return productsClient.getProduct(productId);
     }
 
-    public List<Product> getProducts(final List<String> productIds) {
+    public List<ProductDto> getProducts(final List<String> productIds) {
         return productsClient.getProducts(productIds);
     }
 }

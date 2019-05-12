@@ -1,6 +1,6 @@
 package com.jaarquesuoc.shop.orders.controllers;
 
-import com.jaarquesuoc.shop.orders.dtos.Order;
+import com.jaarquesuoc.shop.orders.dtos.OrderDto;
 import com.jaarquesuoc.shop.orders.services.OrdersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +17,12 @@ public class OrdersController {
     private final OrdersService ordersService;
 
     @GetMapping("/orders/{id}")
-    public Order getOrder(@PathVariable("id") final String id) {
+    public OrderDto getOrder(@PathVariable("id") final String id) {
         return ordersService.getOrder(id);
     }
 
     @GetMapping("/orders/")
-    public List<Order> getOrders() {
+    public List<OrderDto> getOrders() {
         return ordersService.getOrders();
     }
 }

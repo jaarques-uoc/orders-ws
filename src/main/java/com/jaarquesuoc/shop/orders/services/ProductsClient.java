@@ -1,6 +1,6 @@
 package com.jaarquesuoc.shop.orders.services;
 
-import com.jaarquesuoc.shop.orders.dtos.Product;
+import com.jaarquesuoc.shop.orders.dtos.ProductDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +12,8 @@ import java.util.List;
 public interface ProductsClient {
 
     @GetMapping("/products/{productId}")
-    Product getProduct(@PathVariable("productId") final String productId);
+    ProductDto getProduct(@PathVariable("productId") final String productId);
 
     @GetMapping("/products")
-    List<Product> getProducts(@RequestParam("ids") final List<String> productIds);
+    List<ProductDto> getProducts(@RequestParam("ids") final List<String> productIds);
 }

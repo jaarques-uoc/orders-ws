@@ -1,6 +1,11 @@
 # orders-ws [![Build Status](https://travis-ci.com/jaarques-uoc/orders-ws.svg?branch=master)](https://travis-ci.com/jaarques-uoc/orders-ws)
 
 Command line tools:
+* Mongodb:
+    * Installation:
+        * `brew tap mongodb/brew`
+        * `brew install mongodb-community@4.0`
+    * Start: `mongod --config /usr/local/etc/mongod.conf`
 * Spring boot:
     * build: `./gradlew build`
     * run: `./gradlew bootRun`

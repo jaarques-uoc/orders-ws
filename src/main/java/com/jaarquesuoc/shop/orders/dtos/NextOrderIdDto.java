@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class NextOrderId {
+public class NextOrderIdDto {
 
     private String nextOrderId;
 }
