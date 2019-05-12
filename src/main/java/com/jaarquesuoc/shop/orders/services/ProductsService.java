@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class ProductService {
+public class ProductsService {
 
-    private final ProductClient productClient;
+    private final ProductsClient productsClient;
 
     public Product getProduct (final String productId) {
-        return productClient.getProduct(productId);
+        return productsClient.getProduct(productId);
     }
 }

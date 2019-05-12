@@ -17,7 +17,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class OrdersService {
 
-    private final ProductService productService;
+    private final ProductsService productsService;
 
     public List<Order> getOrders() {
         return IntStream.range(0, 30)
@@ -63,7 +63,7 @@ public class OrdersService {
 
     private OrderItem buildOrderItem(final String id) {
         return OrderItem.builder()
-            .product(productService.getProduct(id))
+            .product(productsService.getProduct(id))
             .quantity(2)
             .build();
     }
