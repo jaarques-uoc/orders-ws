@@ -1,4 +1,4 @@
-package com.jaarquesuoc.shop.orders.models;
+package com.jaarquesuoc.shop.orders.dtos;
 
 import lombok.Builder;
 import lombok.Data;

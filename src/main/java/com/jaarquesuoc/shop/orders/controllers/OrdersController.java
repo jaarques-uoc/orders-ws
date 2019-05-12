@@ -1,6 +1,6 @@
 package com.jaarquesuoc.shop.orders.controllers;
 
-import com.jaarquesuoc.shop.orders.models.Order;
+import com.jaarquesuoc.shop.orders.dtos.Order;
 import com.jaarquesuoc.shop.orders.services.OrdersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

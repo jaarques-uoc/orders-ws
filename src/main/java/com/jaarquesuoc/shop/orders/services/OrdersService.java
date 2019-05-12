@@ -1,8 +1,8 @@
 package com.jaarquesuoc.shop.orders.services;
 
-import com.jaarquesuoc.shop.orders.models.NextOrderId;
-import com.jaarquesuoc.shop.orders.models.Order;
-import com.jaarquesuoc.shop.orders.models.OrderItem;
+import com.jaarquesuoc.shop.orders.dtos.NextOrderId;
+import com.jaarquesuoc.shop.orders.dtos.Order;
+import com.jaarquesuoc.shop.orders.dtos.OrderItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
