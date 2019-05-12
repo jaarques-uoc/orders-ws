@@ -3,7 +3,8 @@ package com.jaarquesuoc.shop.orders.services;
 import com.jaarquesuoc.shop.orders.models.NextOrderId;
 import com.jaarquesuoc.shop.orders.models.Order;
 import com.jaarquesuoc.shop.orders.models.OrderItem;
-import com.jaarquesuoc.shop.orders.models.Product;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -13,7 +14,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class OrdersService {
+
+    private final ProductService productService;
 
     public List<Order> getOrders() {
         return IntStream.range(0, 30)
@@ -59,13 +63,7 @@ public class OrdersService {
 
     private OrderItem buildOrderItem(final String id) {
         return OrderItem.builder()
-            .product(Product.builder()
-                .id(id)
-                .name("Item name " + id)
-                .description("Some description")
-                .price(BigDecimal.valueOf(2.23D))
-                .imageUrl("https://static.cardmarket.com/img/548dd39417c935651fbd98c3ee6d5951/items/1/WAR/372131.jpg")
-                .build())
+            .product(productService.getProduct(id))
             .quantity(2)
             .build();
     }
