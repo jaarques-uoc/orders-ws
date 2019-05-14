@@ -1,5 +1,8 @@
 spring:
   application.name: orders-ws
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/mongodb}
 
 eureka:
   client.serviceUrl.defaultZone: ${EUREKA_URL:http://localhost:7100/eureka}
