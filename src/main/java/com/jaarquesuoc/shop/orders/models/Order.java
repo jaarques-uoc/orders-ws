@@ -1,4 +1,4 @@
-package com.jaarquesuoc.shop.orders.dtos;
+package com.jaarquesuoc.shop.orders.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDto {
+public class Order {
 
     private String id;
 
@@ -23,5 +23,5 @@ public class OrderDto {
 
     private String customerId;
 
-    private List<OrderItemDto> orderItemDtos;
+    private List<OrderItem> orderItems;
 }

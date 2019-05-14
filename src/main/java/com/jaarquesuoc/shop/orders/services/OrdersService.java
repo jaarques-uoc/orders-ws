@@ -4,6 +4,7 @@ import com.jaarquesuoc.shop.orders.dtos.NextOrderIdDto;
 import com.jaarquesuoc.shop.orders.dtos.OrderDto;
 import com.jaarquesuoc.shop.orders.dtos.OrderItemDto;
 import com.jaarquesuoc.shop.orders.dtos.ProductDto;
+import com.jaarquesuoc.shop.orders.repositories.OrdersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,8 @@ import static java.util.stream.Collectors.toList;
 public class OrdersService {
 
     private final ProductsService productsService;
+
+    private final OrdersRepository ordersRepository;
 
     public List<OrderDto> getOrders() {
         return IntStream.range(0, 30)
@@ -38,9 +41,14 @@ public class OrdersService {
     }
 
     public NextOrderIdDto getNextOrderId(final String customerId) {
+        final Long nOrders = ordersRepository.countByCustomerId(customerId);
         return NextOrderIdDto.builder()
-            .nextOrderId(customerId + "-" + 0)
+            .nextOrderId(generateNextOrderId(customerId, nOrders))
             .build();
+    }
+
+    private String generateNextOrderId(final String customerId, final Long nOrders) {
+        return customerId + "-" + nOrders;
     }
 
     private OrderDto buildOrder(final String id) {
