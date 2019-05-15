@@ -6,6 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.toMap;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -17,7 +21,9 @@ public class ProductsService {
         return productsClient.getProduct(productId);
     }
 
-    public List<ProductDto> getProducts(final List<String> productIds) {
-        return productsClient.getProducts(productIds);
+    public Map<String, ProductDto> getProducts(final List<String> productIds) {
+        return productsClient.getProducts(productIds)
+            .stream()
+            .collect(toMap(ProductDto::getId, Function.identity()));
     }
 }

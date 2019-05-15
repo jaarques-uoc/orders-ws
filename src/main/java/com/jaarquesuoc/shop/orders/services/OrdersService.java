@@ -4,16 +4,19 @@ import com.jaarquesuoc.shop.orders.dtos.NextOrderIdDto;
 import com.jaarquesuoc.shop.orders.dtos.OrderDto;
 import com.jaarquesuoc.shop.orders.dtos.OrderItemDto;
 import com.jaarquesuoc.shop.orders.dtos.ProductDto;
+import com.jaarquesuoc.shop.orders.mappers.OrderMapper;
+import com.jaarquesuoc.shop.orders.models.Order;
 import com.jaarquesuoc.shop.orders.repositories.OrdersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.Map;
+import java.util.Optional;
 
+import static java.math.BigDecimal.ZERO;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -24,20 +27,36 @@ public class OrdersService {
 
     private final OrdersRepository ordersRepository;
 
-    public List<OrderDto> getOrders() {
-        return IntStream.range(0, 30)
-            .mapToObj(i -> buildViewOrder(String.valueOf(i)))
+    public Optional<OrderDto> getOrderDto(final String id) {
+        Optional<OrderDto> optionalOrderDto = ordersRepository.findById(id)
+            .map(OrderMapper.INSTANCE::toOrderDto);
+
+        optionalOrderDto.ifPresent(this::populateCartDtoWithProducts);
+
+        return optionalOrderDto;
+    }
+
+    public List<OrderDto> getOrderDtos() {
+        return ordersRepository.findAll()
+            .stream()
+            .map(OrderMapper.INSTANCE::toOrderDto)
             .collect(toList());
     }
 
-    public List<OrderDto> getCustomerOrders(final String customerId) {
-        return IntStream.range(0, 30)
-            .mapToObj(i -> buildViewOrder(String.valueOf(i), customerId))
+    public List<OrderDto> getCustomerOrderDtos(final String customerId) {
+        return ordersRepository.findAllByCustomerId(customerId)
+            .stream()
+            .map(OrderMapper.INSTANCE::toOrderDto)
             .collect(toList());
     }
 
-    public OrderDto getOrder(final String id) {
-        return buildOrder(id);
+    public Optional<OrderDto> getCustomerOrderDto(final String orderId, final String customerId) {
+        Optional<OrderDto> optionalOrderDto = ordersRepository.findByIdAndCustomerId(orderId, customerId)
+            .map(OrderMapper.INSTANCE::toOrderDto);
+
+        optionalOrderDto.ifPresent(this::populateCartDtoWithProducts);
+
+        return optionalOrderDto;
     }
 
     public NextOrderIdDto getNextOrderId(final String customerId) {
@@ -47,53 +66,49 @@ public class OrdersService {
             .build();
     }
 
+    public OrderDto createOrder(final OrderDto orderDto, final String customerId) {
+        Order order = OrderMapper.INSTANCE.toOrder(orderDto);
+
+        order.setId(getNextOrderId(customerId).getNextOrderId());
+        order.setCustomerId(customerId);
+        order.setAmount(calculateAmount(orderDto).orElse(ZERO));
+
+        Order createdOrder = ordersRepository.save(order);
+
+        OrderDto createdOrderDto = OrderMapper.INSTANCE.toOrderDto(createdOrder);
+
+        populateCartDtoWithProducts(createdOrderDto);
+
+        return createdOrderDto;
+    }
+
+    private Optional<BigDecimal> calculateAmount(final OrderDto orderDto) {
+        return orderDto.getOrderItemDtos().stream()
+            .map(this::calculateItemAmount)
+            .reduce(BigDecimal::add);
+    }
+
+    private BigDecimal calculateItemAmount(final OrderItemDto orderItemDto) {
+        return orderItemDto.getProductDto().getPrice().multiply(BigDecimal.valueOf(orderItemDto.getQuantity()));
+    }
+
     private String generateNextOrderId(final String customerId, final Long nOrders) {
         return customerId + "-" + nOrders;
     }
 
-    private OrderDto buildOrder(final String id) {
-        return buildOrder(id, id);
-    }
+    private void populateCartDtoWithProducts(final OrderDto orderDto) {
+        if (orderDto.getOrderItemDtos() == null) {
+            return;
+        }
 
-    private OrderDto buildOrder(final String id, final String customerId) {
-        return OrderDto.builder()
-            .id(id)
-            .amount(BigDecimal.valueOf(12.56))
-            .date(LocalDateTime.now())
-            .customerId(customerId)
-            .orderItemDtos(buildOrderItems())
-            .build();
-    }
-
-    private OrderDto buildViewOrder(final String id) {
-        return buildViewOrder(id, id);
-    }
-
-    private OrderDto buildViewOrder(final String id, final String customerId) {
-        return OrderDto.builder()
-            .id(id)
-            .amount(BigDecimal.valueOf(12.56))
-            .date(LocalDateTime.now())
-            .customerId(customerId)
-            .build();
-    }
-
-    private List<OrderItemDto> buildOrderItems() {
-        List<String> productIds = IntStream.range(0, 5)
-            .mapToObj(String::valueOf)
+        List<String> productIds = orderDto.getOrderItemDtos().stream()
+            .map(OrderItemDto::getProductDto)
+            .map(ProductDto::getId)
             .collect(toList());
 
-        List<ProductDto> productDtos = productsService.getProducts(productIds);
+        Map<String, ProductDto> productDtos = productsService.getProducts(productIds);
 
-        return productDtos.stream()
-            .map(this::buildOrderItem)
-            .collect(toList());
-    }
-
-    private OrderItemDto buildOrderItem(final ProductDto productDto) {
-        return OrderItemDto.builder()
-            .productDto(productDto)
-            .quantity(2)
-            .build();
+        orderDto.getOrderItemDtos()
+            .forEach(orderItemDto -> orderItemDto.setProductDto(productDtos.get(orderItemDto.getProductDto().getId())));
     }
 }

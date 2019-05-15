@@ -14,11 +14,11 @@ public interface OrderMapper {
 
     OrderMapper INSTANCE = Mappers.getMapper(OrderMapper.class);
 
-    @Mapping(target = "date", ignore = true)
     @Mapping(source = "orderItems", target = "orderItemDtos")
     OrderDto toOrderDto(Order order);
 
-    @InheritInverseConfiguration
+    @Mapping(target = "date", ignore = true)
+    @Mapping(source = "orderItemDtos", target = "orderItems")
     Order toOrder(OrderDto orderDto);
 
     @Mapping(source = "productId", target = "productDto.id")

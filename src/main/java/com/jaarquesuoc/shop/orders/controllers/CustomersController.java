@@ -5,9 +5,13 @@ import com.jaarquesuoc.shop.orders.dtos.OrderDto;
 import com.jaarquesuoc.shop.orders.services.OrdersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -19,7 +23,20 @@ public class CustomersController {
 
     @GetMapping("/customers/{customerId}/orders")
     public List<OrderDto> getCustomerOrders(@PathVariable("customerId") final String customerId) {
-        return ordersService.getCustomerOrders(customerId);
+        return ordersService.getCustomerOrderDtos(customerId);
+    }
+
+    @GetMapping("/customers/{customerId}/orders/{orderId}")
+    public OrderDto getCustomerOrder(@PathVariable("orderId") final String orderId,
+                                     @PathVariable("customerId") final String customerId) {
+        return ordersService.getCustomerOrderDto(orderId, customerId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @PostMapping("/customers/{customerId}/orders")
+    public OrderDto createCustomerOrder(@RequestBody final OrderDto orderDto,
+                                        @PathVariable("customerId") final String customerId) {
+        return ordersService.createOrder(orderDto, customerId);
     }
 
     @GetMapping("/customers/{customerId}/nextOrderId")

@@ -19,7 +19,8 @@ public class Order {
 
     private BigDecimal amount;
 
-    private LocalDateTime date;
+    @Builder.Default()
+    private LocalDateTime date = LocalDateTime.now();
 
     private String customerId;
 
