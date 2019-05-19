@@ -1,5 +1,6 @@
 package com.jaarquesuoc.shop.orders.services;
 
+import com.jaarquesuoc.shop.orders.dtos.CustomerDto;
 import com.jaarquesuoc.shop.orders.dtos.NextOrderIdDto;
 import com.jaarquesuoc.shop.orders.dtos.OrderDto;
 import com.jaarquesuoc.shop.orders.dtos.OrderItemDto;
@@ -25,25 +26,27 @@ public class OrdersService {
 
     private final ProductsService productsService;
 
+    private final CustomersService customersService;
+
     private final OrdersRepository ordersRepository;
 
     public Optional<OrderDto> getOrderDto(final String id) {
         Optional<OrderDto> optionalOrderDto = ordersRepository.findById(id)
             .map(OrderMapper.INSTANCE::toOrderDto);
 
-        optionalOrderDto.ifPresent(this::populateCartDtoWithProducts);
+        optionalOrderDto.ifPresent(this::populateOrderDtoWithProducts);
 
         return optionalOrderDto;
     }
 
-    public List<OrderDto> getOrderDtos() {
+    public List<OrderDto> getAllOrderDtos() {
         return ordersRepository.findAll()
             .stream()
             .map(OrderMapper.INSTANCE::toOrderDto)
             .collect(toList());
     }
 
-    public List<OrderDto> getCustomerOrderDtos(final String customerId) {
+    public List<OrderDto> getAllCustomerOrderDtos(final String customerId) {
         return ordersRepository.findAllByCustomerId(customerId)
             .stream()
             .map(OrderMapper.INSTANCE::toOrderDto)
@@ -54,32 +57,43 @@ public class OrdersService {
         Optional<OrderDto> optionalOrderDto = ordersRepository.findByIdAndCustomerId(orderId, customerId)
             .map(OrderMapper.INSTANCE::toOrderDto);
 
-        optionalOrderDto.ifPresent(this::populateCartDtoWithProducts);
+        optionalOrderDto.ifPresent(this::populateOrderDtoWithProducts);
 
         return optionalOrderDto;
     }
 
     public NextOrderIdDto getNextOrderId(final String customerId) {
         final Long nOrders = ordersRepository.countByCustomerId(customerId);
+
         return NextOrderIdDto.builder()
             .nextOrderId(generateNextOrderId(customerId, nOrders))
             .build();
     }
 
     public OrderDto createOrder(final OrderDto orderDto, final String customerId) {
+        CustomerDto customerDto = customersService.getCustomerDto(customerId);
+
+        return createOrder(orderDto, customerDto);
+    }
+
+    private OrderDto createOrder(final OrderDto orderDto, final CustomerDto customerDto) {
         Order order = OrderMapper.INSTANCE.toOrder(orderDto);
 
-        order.setId(getNextOrderId(customerId).getNextOrderId());
-        order.setCustomerId(customerId);
+        order.setId(getNextOrderId(customerDto.getId()).getNextOrderId());
+        order.setCustomerId(customerDto.getId());
         order.setAmount(calculateAmount(orderDto).orElse(ZERO));
 
         Order createdOrder = ordersRepository.save(order);
 
         OrderDto createdOrderDto = OrderMapper.INSTANCE.toOrderDto(createdOrder);
 
-        populateCartDtoWithProducts(createdOrderDto);
+        populateOrderDtoWithProducts(createdOrderDto);
 
         return createdOrderDto;
+    }
+
+    public void cleanDb() {
+        ordersRepository.deleteAll();
     }
 
     private Optional<BigDecimal> calculateAmount(final OrderDto orderDto) {
@@ -96,7 +110,7 @@ public class OrdersService {
         return customerId + "-" + nOrders;
     }
 
-    private void populateCartDtoWithProducts(final OrderDto orderDto) {
+    private void populateOrderDtoWithProducts(final OrderDto orderDto) {
         if (orderDto.getOrderItemDtos() == null) {
             return;
         }

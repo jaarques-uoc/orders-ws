@@ -23,7 +23,7 @@ public class CustomersController {
 
     @GetMapping("/customers/{customerId}/orders")
     public List<OrderDto> getCustomerOrders(@PathVariable("customerId") final String customerId) {
-        return ordersService.getCustomerOrderDtos(customerId);
+        return ordersService.getAllCustomerOrderDtos(customerId);
     }
 
     @GetMapping("/customers/{customerId}/orders/{orderId}")
