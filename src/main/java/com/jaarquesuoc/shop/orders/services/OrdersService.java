@@ -77,19 +77,21 @@ public class OrdersService {
     }
 
     private OrderDto createOrder(final OrderDto orderDto, final CustomerDto customerDto) {
-        Order order = OrderMapper.INSTANCE.toOrder(orderDto);
+        populateWithCustomerDto(orderDto, customerDto);
 
-        order.setId(getNextOrderId(customerDto.getId()).getNextOrderId());
-        order.setCustomerId(customerDto.getId());
-        order.setAmount(calculateAmount(orderDto).orElse(ZERO));
-
-        Order createdOrder = ordersRepository.save(order);
-
-        OrderDto createdOrderDto = OrderMapper.INSTANCE.toOrderDto(createdOrder);
+        OrderDto createdOrderDto = createOrder(orderDto);
 
         populateOrderDtoWithProducts(createdOrderDto);
 
         return createdOrderDto;
+    }
+
+    private OrderDto createOrder(final OrderDto orderDto) {
+        Order order = OrderMapper.INSTANCE.toOrder(orderDto);
+
+        Order createdOrder = ordersRepository.save(order);
+
+        return OrderMapper.INSTANCE.toOrderDto(createdOrder);
     }
 
     public void cleanDb() {
@@ -108,6 +110,12 @@ public class OrdersService {
 
     private String generateNextOrderId(final String customerId, final Long nOrders) {
         return customerId + "-" + nOrders;
+    }
+
+    private void populateWithCustomerDto(final OrderDto orderDto, final CustomerDto customerDto) {
+        orderDto.setId(getNextOrderId(customerDto.getId()).getNextOrderId());
+        orderDto.setCustomerId(customerDto.getId());
+        orderDto.setAmount(calculateAmount(orderDto).orElse(ZERO));
     }
 
     private void populateOrderDtoWithProducts(final OrderDto orderDto) {
