@@ -1,8 +1,10 @@
 package com.jaarquesuoc.shop.orders.mappers;
 
 import com.jaarquesuoc.shop.orders.dtos.OrderDto;
+import com.jaarquesuoc.shop.orders.dtos.OrderEventDto;
 import com.jaarquesuoc.shop.orders.dtos.OrderItemDto;
 import com.jaarquesuoc.shop.orders.models.Order;
+import com.jaarquesuoc.shop.orders.models.OrderEvent;
 import com.jaarquesuoc.shop.orders.models.OrderItem;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
@@ -26,4 +28,10 @@ public interface OrderMapper {
 
     @InheritInverseConfiguration
     OrderItem toOrderItem(OrderItemDto orderItemDto);
+
+    OrderEventDto toOrderEventDto(OrderEvent orderEvent);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "date", ignore = true)
+    OrderEvent toOrderEvent(OrderEventDto orderEventDto);
 }

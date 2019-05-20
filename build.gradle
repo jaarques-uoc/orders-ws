@@ -16,6 +16,7 @@ configurations {
 }
 
 repositories {
+    maven { url 'https://repo.spring.io/milestone' }
     mavenCentral()
 }
 
@@ -29,6 +30,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    compile "io.projectreactor:reactor-core:3.3.0.M1"
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

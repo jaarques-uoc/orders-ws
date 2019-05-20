@@ -1,6 +1,7 @@
 package com.jaarquesuoc.shop.orders.controllers;
 
 import com.jaarquesuoc.shop.orders.dtos.OrderDto;
+import com.jaarquesuoc.shop.orders.dtos.OrderEventDto;
 import com.jaarquesuoc.shop.orders.services.OrdersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +28,10 @@ public class OrdersController {
     @GetMapping("/orders/")
     public List<OrderDto> getOrders() {
         return ordersService.getAllOrderDtos();
+    }
+
+    @GetMapping("/orders/{id}/events")
+    public List<OrderEventDto> getOrderEvents(@PathVariable("id") final String id) {
+        return ordersService.getAllOrderEventDtosByOrderId(id);
     }
 }
