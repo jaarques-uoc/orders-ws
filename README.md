@@ -15,7 +15,10 @@ Command line tools:
     * stop: `docker stop $(docker ps -q --filter ancestor=orders-ws)`
     * stop all containers: `docker stop $(docker ps -a -q)`
 
-* Urls:
-    * Travis CI history: https://travis-ci.com/jaarques-uoc/orders-ws/
-    * Docker image: https://cloud.docker.com/repository/docker/jaarquesuoc/orders-ws
-    * Heroku app health-check: https://orders-ws.herokuapp.com/actuator/health
+Initialization endpoint:
+* `curl localhost:700/init`: It removes all the exixting orders from the DB.
+
+Monitoring urls:
+* Travis CI history: https://travis-ci.com/jaarques-uoc/orders-ws/
+* Docker image: https://cloud.docker.com/repository/docker/jaarquesuoc/orders-ws
+* Heroku app health-check: https://orders-ws.herokuapp.com/actuator/health
