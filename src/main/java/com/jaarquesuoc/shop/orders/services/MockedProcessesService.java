@@ -5,25 +5,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class MockedProcessesService {
 
-    public boolean processPayment() {
+    public Void processPayment() {
         return mockService();
     }
 
-    public boolean prepareShipment() {
+    public Void prepareShipment() {
         return mockService();
     }
 
-    public boolean sendOrder() {
+    public Void sendOrder() {
         return mockService();
     }
 
-    private boolean mockService() {
+    private Void mockService() {
         try {
             Thread.sleep(20000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        return true;
+        return null;
     }
 }

@@ -130,11 +130,11 @@ public class OrdersService {
 
     private void processPayment(final Order order) {
         Mono.fromCallable(mockedProcessesService::processPayment)
-            .doOnNext(paymentSuccess -> createOrderEvent(order, PAYMENT_PROCESSED))
-            .doOnNext(orderEvent1 -> mockedProcessesService.prepareShipment())
-            .doOnNext(paymentSuccess -> createOrderEvent(order, SHIPMENT_READY))
-            .doOnNext(orderEvent1 -> mockedProcessesService.sendOrder())
-            .doOnNext(paymentSuccess -> createOrderEvent(order, SENT))
+            .doOnNext(voidVar -> createOrderEvent(order, PAYMENT_PROCESSED))
+            .doOnNext(voidVar -> mockedProcessesService.prepareShipment())
+            .doOnNext(voidVar -> createOrderEvent(order, SHIPMENT_READY))
+            .doOnNext(voidVar -> mockedProcessesService.sendOrder())
+            .doOnNext(voidVar -> createOrderEvent(order, SENT))
             .subscribeOn(Schedulers.parallel())
             .subscribe();
     }
