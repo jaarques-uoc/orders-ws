@@ -11,6 +11,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper
 public interface OrdersMapper {
 
@@ -23,6 +25,8 @@ public interface OrdersMapper {
     @Mapping(source = "orderItemDtos", target = "orderItems")
     Order toOrder(OrderDto orderDto);
 
+    List<OrderDto> toOrderDtos(List<Order> order);
+
     @Mapping(source = "productId", target = "productDto.id")
     OrderItemDto toOrderItemDto(OrderItem orderItem);
 
@@ -34,4 +38,6 @@ public interface OrdersMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "date", ignore = true)
     OrderEvent toOrderEvent(OrderEventDto orderEventDto);
+
+    List<OrderEventDto> toOrderEventDtos(List<OrderEvent> orderEvents);
 }

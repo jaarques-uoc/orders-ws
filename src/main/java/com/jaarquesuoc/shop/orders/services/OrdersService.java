@@ -54,24 +54,21 @@ public class OrdersService {
     }
 
     public List<OrderDto> getAllOrderDtos() {
-        return ordersRepository.findAll()
-            .stream()
-            .map(OrdersMapper.INSTANCE::toOrderDto)
-            .collect(toList());
+        List<Order> orders = ordersRepository.findAll();
+
+        return OrdersMapper.INSTANCE.toOrderDtos(orders);
     }
 
     public List<OrderEventDto> getAllOrderEventDtosByOrderId(final String orderId) {
-        return orderEventsRepository.findAllByOrderId(orderId)
-            .stream()
-            .map(OrdersMapper.INSTANCE::toOrderEventDto)
-            .collect(toList());
+        List<OrderEvent> orderEvents = orderEventsRepository.findAllByOrderId(orderId);
+
+        return OrdersMapper.INSTANCE.toOrderEventDtos(orderEvents);
     }
 
     public List<OrderDto> getAllCustomerOrderDtos(final String customerId) {
-        return ordersRepository.findAllByCustomerId(customerId)
-            .stream()
-            .map(OrdersMapper.INSTANCE::toOrderDto)
-            .collect(toList());
+        List<Order> orders = ordersRepository.findAllByCustomerId(customerId);
+
+        return OrdersMapper.INSTANCE.toOrderDtos(orders);
     }
 
     public Optional<OrderDto> getCustomerOrderDto(final String orderId, final String customerId) {
