@@ -7,7 +7,7 @@ import com.jaarquesuoc.shop.orders.dtos.OrderEventDto;
 import com.jaarquesuoc.shop.orders.dtos.OrderItemDto;
 import com.jaarquesuoc.shop.orders.dtos.OrderStatus;
 import com.jaarquesuoc.shop.orders.dtos.ProductDto;
-import com.jaarquesuoc.shop.orders.mappers.OrderMapper;
+import com.jaarquesuoc.shop.orders.mappers.OrdersMapper;
 import com.jaarquesuoc.shop.orders.models.Order;
 import com.jaarquesuoc.shop.orders.models.OrderEvent;
 import com.jaarquesuoc.shop.orders.repositories.OrderEventsRepository;
@@ -46,7 +46,7 @@ public class OrdersService {
 
     public Optional<OrderDto> getOrderDto(final String id) {
         Optional<OrderDto> optionalOrderDto = ordersRepository.findById(id)
-            .map(OrderMapper.INSTANCE::toOrderDto);
+            .map(OrdersMapper.INSTANCE::toOrderDto);
 
         optionalOrderDto.ifPresent(this::populateOrderDtoWithProducts);
 
@@ -56,27 +56,27 @@ public class OrdersService {
     public List<OrderDto> getAllOrderDtos() {
         return ordersRepository.findAll()
             .stream()
-            .map(OrderMapper.INSTANCE::toOrderDto)
+            .map(OrdersMapper.INSTANCE::toOrderDto)
             .collect(toList());
     }
 
     public List<OrderEventDto> getAllOrderEventDtosByOrderId(final String orderId) {
         return orderEventsRepository.findAllByOrderId(orderId)
             .stream()
-            .map(OrderMapper.INSTANCE::toOrderEventDto)
+            .map(OrdersMapper.INSTANCE::toOrderEventDto)
             .collect(toList());
     }
 
     public List<OrderDto> getAllCustomerOrderDtos(final String customerId) {
         return ordersRepository.findAllByCustomerId(customerId)
             .stream()
-            .map(OrderMapper.INSTANCE::toOrderDto)
+            .map(OrdersMapper.INSTANCE::toOrderDto)
             .collect(toList());
     }
 
     public Optional<OrderDto> getCustomerOrderDto(final String orderId, final String customerId) {
         Optional<OrderDto> optionalOrderDto = ordersRepository.findByIdAndCustomerId(orderId, customerId)
-            .map(OrderMapper.INSTANCE::toOrderDto);
+            .map(OrdersMapper.INSTANCE::toOrderDto);
 
         optionalOrderDto.ifPresent(this::populateOrderDtoWithProducts);
 
@@ -108,7 +108,7 @@ public class OrdersService {
     }
 
     private OrderDto createOrder(final OrderDto orderDto) {
-        Order order = OrderMapper.INSTANCE.toOrder(orderDto);
+        Order order = OrdersMapper.INSTANCE.toOrder(orderDto);
 
         Order createdOrder = ordersRepository.save(order);
 
@@ -116,7 +116,7 @@ public class OrdersService {
 
         processPayment(createdOrder);
 
-        return OrderMapper.INSTANCE.toOrderDto(createdOrder);
+        return OrdersMapper.INSTANCE.toOrderDto(createdOrder);
     }
 
     private void createOrderEvent(final Order order, final OrderStatus orderStatus) {

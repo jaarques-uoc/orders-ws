@@ -12,9 +12,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface OrderMapper {
+public interface OrdersMapper {
 
-    OrderMapper INSTANCE = Mappers.getMapper(OrderMapper.class);
+    OrdersMapper INSTANCE = Mappers.getMapper(OrdersMapper.class);
 
     @Mapping(source = "orderItems", target = "orderItemDtos")
     OrderDto toOrderDto(Order order);
