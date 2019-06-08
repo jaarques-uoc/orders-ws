@@ -71,15 +71,6 @@ public class OrdersService {
         return OrdersMapper.INSTANCE.toOrderDtos(orders);
     }
 
-    public Optional<OrderDto> getCustomerOrderDto(final String orderId, final String customerId) {
-        Optional<OrderDto> optionalOrderDto = ordersRepository.findByIdAndCustomerId(orderId, customerId)
-            .map(OrdersMapper.INSTANCE::toOrderDto);
-
-        optionalOrderDto.ifPresent(this::populateOrderDtoWithProducts);
-
-        return optionalOrderDto;
-    }
-
     public NextOrderIdDto getNextOrderId(final String customerId) {
         final Long nOrders = ordersRepository.countByCustomerId(customerId);
 
