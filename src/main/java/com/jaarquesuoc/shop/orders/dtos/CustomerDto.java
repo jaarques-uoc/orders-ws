@@ -27,5 +27,5 @@ public class CustomerDto {
 
     private LocalDateTime date;
 
-    private CustomerType type;
+    private CustomerRole role;
 }
