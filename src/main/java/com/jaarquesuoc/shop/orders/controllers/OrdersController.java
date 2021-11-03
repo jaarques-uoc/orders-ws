@@ -22,7 +22,7 @@ public class OrdersController {
     @GetMapping("/orders/{id}")
     public OrderDto getOrder(@PathVariable("id") final String id) {
         return ordersService.getOrderDto(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/orders/")

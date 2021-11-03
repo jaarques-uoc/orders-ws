@@ -46,7 +46,7 @@ public class OrdersService {
 
     public Optional<OrderDto> getOrderDto(final String id) {
         Optional<OrderDto> optionalOrderDto = ordersRepository.findById(id)
-            .map(OrdersMapper.INSTANCE::toOrderDto);
+                .map(OrdersMapper.INSTANCE::toOrderDto);
 
         optionalOrderDto.ifPresent(this::populateOrderDtoWithProducts);
 
@@ -75,8 +75,8 @@ public class OrdersService {
         final Long nOrders = ordersRepository.countByCustomerId(customerId);
 
         return NextOrderIdDto.builder()
-            .nextOrderId(generateNextOrderId(customerId, nOrders))
-            .build();
+                .nextOrderId(generateNextOrderId(customerId, nOrders))
+                .build();
     }
 
     public OrderDto createOrder(final OrderDto orderDto, final String customerId) {
@@ -109,22 +109,22 @@ public class OrdersService {
 
     private void createOrderEvent(final Order order, final OrderStatus orderStatus) {
         OrderEvent orderEvent = OrderEvent.builder()
-            .orderId(order.getId())
-            .status(orderStatus)
-            .build();
+                .orderId(order.getId())
+                .status(orderStatus)
+                .build();
 
         orderEventsRepository.save(orderEvent);
     }
 
     private void processPayment(final Order order) {
         Mono.fromCallable(mockedProcessesService::processPayment)
-            .doOnSuccess(voidVar -> createOrderEvent(order, PAYMENT_PROCESSED))
-            .doOnSuccess(voidVar -> mockedProcessesService.prepareShipment())
-            .doOnSuccess(voidVar -> createOrderEvent(order, SHIPMENT_READY))
-            .doOnSuccess(voidVar -> mockedProcessesService.sendOrder())
-            .doOnSuccess(voidVar -> createOrderEvent(order, SENT))
-            .subscribeOn(Schedulers.parallel())
-            .subscribe();
+                .doOnSuccess(voidVar -> createOrderEvent(order, PAYMENT_PROCESSED))
+                .doOnSuccess(voidVar -> mockedProcessesService.prepareShipment())
+                .doOnSuccess(voidVar -> createOrderEvent(order, SHIPMENT_READY))
+                .doOnSuccess(voidVar -> mockedProcessesService.sendOrder())
+                .doOnSuccess(voidVar -> createOrderEvent(order, SENT))
+                .subscribeOn(Schedulers.parallel())
+                .subscribe();
     }
 
     public void cleanDb() {
@@ -133,8 +133,8 @@ public class OrdersService {
 
     private Optional<BigDecimal> calculateAmount(final OrderDto orderDto) {
         return orderDto.getOrderItemDtos().stream()
-            .map(this::calculateItemAmount)
-            .reduce(BigDecimal::add);
+                .map(this::calculateItemAmount)
+                .reduce(BigDecimal::add);
     }
 
     private BigDecimal calculateItemAmount(final OrderItemDto orderItemDto) {
@@ -157,13 +157,14 @@ public class OrdersService {
         }
 
         List<String> productIds = orderDto.getOrderItemDtos().stream()
-            .map(OrderItemDto::getProductDto)
-            .map(ProductDto::getId)
-            .collect(toList());
+                .map(OrderItemDto::getProductDto)
+                .map(ProductDto::getId)
+                .collect(toList());
 
         Map<String, ProductDto> productDtos = productsService.getProducts(productIds);
 
         orderDto.getOrderItemDtos()
-            .forEach(orderItemDto -> orderItemDto.setProductDto(productDtos.get(orderItemDto.getProductDto().getId())));
+                .forEach(orderItemDto -> orderItemDto
+                        .setProductDto(productDtos.get(orderItemDto.getProductDto().getId())));
     }
 }

@@ -11,9 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InitialisationDto {
 
-    public enum InitialisationStatus {OK}
-
     private InitialisationStatus initialisationStatus;
-
     private Object metadata;
+
+    public enum InitialisationStatus {OK}
 }

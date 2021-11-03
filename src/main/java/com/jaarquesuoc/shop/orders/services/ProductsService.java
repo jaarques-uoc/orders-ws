@@ -23,7 +23,7 @@ public class ProductsService {
 
     public Map<String, ProductDto> getProducts(final List<String> productIds) {
         return productsClient.getProducts(productIds)
-            .stream()
-            .collect(toMap(ProductDto::getId, Function.identity()));
+                .stream()
+                .collect(toMap(ProductDto::getId, Function.identity()));
     }
 }

@@ -20,8 +20,8 @@ public class InitialisationController {
         ordersService.cleanDb();
 
         return InitialisationDto.builder()
-            .initialisationStatus(OK)
-            .metadata(ordersService.getAllOrderDtos())
-            .build();
+                .initialisationStatus(OK)
+                .metadata(ordersService.getAllOrderDtos())
+                .build();
     }
 }
